@@ -7,7 +7,7 @@ from RTX5090Listing import RTX5090Listing
 
 rtx_5090_best_buy_page = "https://www.bestbuy.com/site/searchpage.jsp?_dyncharset=UTF-8&browsedCategory=abcat0507002&id=pcat17071&iht=n&ks=960&list=y&qp=gpusv_facet%3DGraphics%20Processing%20Unit%20(GPU)~Nvidia%20GeForce%20RTX%205090&sc=Global&st=categoryid%24abcat0507002&type=page&usc=All%20Categories"
 
-def searchThroughBestBuy(url):
+def searchThroughBestBuy(url, csv_file):
     page = webdriver.Chrome()
 
     while(True):
@@ -86,4 +86,4 @@ if __name__ == "__main__":
             writer.writerow(["Product Name", "Price", "Available", "No. Units", "Store", "Time", "Link"])
     
     # Search through Newegg's site for information on 5090 listings
-    searchThroughBestBuy(rtx_5090_best_buy_page)
+    searchThroughBestBuy(rtx_5090_best_buy_page, csv_file)

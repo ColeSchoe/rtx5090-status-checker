@@ -7,7 +7,7 @@ from RTX5090Listing import RTX5090Listing
 
 rtx_5090_page_microcenter = "https://www.microcenter.com/search/search_results.aspx?Ntk=all&sortby=match&N=4294966937+4294802166+4294802144&myStore=true"
 
-def searchThroughMicroCenter(url):
+def searchThroughMicroCenter(url, csv_file):
     page = webdriver.Chrome()
 
     while(True):
@@ -85,4 +85,4 @@ if __name__ == "__main__":
             writer.writerow(["Product Name", "Price", "Available", "No. Units", "Store", "Time", "Link"])
     
     # Search through Micro Center's site for information on 5090 listings
-    searchThroughMicroCenter(rtx_5090_page_microcenter)
+    searchThroughMicroCenter(rtx_5090_page_microcenter, csv_file)

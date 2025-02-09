@@ -7,7 +7,7 @@ from RTX5090Listing import RTX5090Listing
 
 rtx_5090_page_newegg = "https://www.newegg.com/p/pl?N=100007709%20601469153"
 
-def searchThroughNewegg(url):
+def searchThroughNewegg(url, csv_file):
     page = webdriver.Chrome()
 
     while(True):
@@ -80,4 +80,4 @@ if __name__ == "__main__":
             writer.writerow(["Product Name", "Price", "Available", "No. Units", "Store", "Time", "Link"])
     
     # Search through Newegg's site for information on 5090 listings
-    searchThroughNewegg(rtx_5090_page_newegg)
+    searchThroughNewegg(rtx_5090_page_newegg, csv_file)
