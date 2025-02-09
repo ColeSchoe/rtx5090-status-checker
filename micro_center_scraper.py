@@ -12,11 +12,13 @@ def searchThroughMicroCenter(url):
 
     while(True):
         page.get(url)
+
+        # Sleep for a bit to avoid bot detection
         time.sleep(randint(3,10))
+        
         unfiltered_listings = page.find_elements(By.CLASS_NAME, "details")
         number_of_listings = unfiltered_listings.__len__()
         current_listing = 0
-        time.sleep(randint(2,5))
         while current_listing < number_of_listings:
             current_5090 = RTX5090Listing()
 

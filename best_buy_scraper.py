@@ -5,9 +5,9 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from RTX5090Listing import RTX5090Listing
 
-rtx_5090_page_newegg = "https://www.newegg.com/p/pl?N=100007709%20601469153"
+rtx_5090_best_buy_page = "https://www.bestbuy.com/site/searchpage.jsp?_dyncharset=UTF-8&browsedCategory=abcat0507002&id=pcat17071&iht=n&ks=960&list=y&qp=gpusv_facet%3DGraphics%20Processing%20Unit%20(GPU)~Nvidia%20GeForce%20RTX%205090&sc=Global&st=categoryid%24abcat0507002&type=page&usc=All%20Categories"
 
-def searchThroughNewegg(url):
+def searchThroughBestBuy(url):
     page = webdriver.Chrome()
 
     while(True):
@@ -16,27 +16,33 @@ def searchThroughNewegg(url):
         # Sleep for a bit to avoid bot detection
         time.sleep(randint(3,10))
 
-        unfiltered_listings = page.find_elements(By.CLASS_NAME, "item-cell")
+        unfiltered_listings = page.find_elements(By.CLASS_NAME, "sku-item")
         number_of_listings = unfiltered_listings.__len__()
         current_listing = 0
         while current_listing < number_of_listings:
             current_5090 = RTX5090Listing()
 
             # Finding the product name
-            product_name = page.find_elements(By.CLASS_NAME, "item-title")[current_listing].text
-            current_5090.product_name = product_name
+            try:
+                product_name = page.find_elements(By.CSS_SELECTOR, "h4.sku-title")[current_listing].text
+                current_5090.product_name = product_name
+            except (Exception):
+                break
 
             # Finding the product price
             try:
-                price_element = page.find_elements(By.CSS_SELECTOR, "li.price-current")[current_listing].text
-                current_5090.price = price_element
+                price_element = page.find_elements(By.CSS_SELECTOR, "span.sr-only")[current_listing].text
+                index = price_element.__len__()-1
+                while (price_element[index] != "$"):
+                    index -= 1
+                current_5090.price = price_element[index:]
             except (Exception):
                 break
 
             # Finding the stock and availability of the product
             try:
-                stock_element = page.find_elements(By.CSS_SELECTOR, "p.item-promo")[current_listing].text
-                if "OUT OF STOCK" in stock_element:
+                stock_element = page.find_elements(By.CSS_SELECTOR, "div.fulfillment-fulfillment-summary")[current_listing].text
+                if "Sold Out" in stock_element:
                     current_5090.no_units = 0
                     current_5090.available = False
                 else:
@@ -44,8 +50,8 @@ def searchThroughNewegg(url):
                     current_5090.available = True
                 
             except (Exception):
-                stock_element = page.find_elements(By.CSS_SELECTOR, "p.item-promo")[-1].text
-                if "OUT OF STOCK" in stock_element:
+                stock_element = page.find_elements(By.CSS_SELECTOR, "div.fulfillment-fulfillment-summary")[-1].text
+                if "Sold Out" in stock_element:
                     current_5090.no_units = 0
                     current_5090.available = False
                 else:
@@ -53,11 +59,11 @@ def searchThroughNewegg(url):
                     current_5090.available = True
             
             # Link to product page
-            link_element = page.find_elements(By.CLASS_NAME, "item-info")[current_listing].get_attribute("href")
+            link_element = page.find_elements(By.CSS_SELECTOR, "a.image-link")[current_listing].get_attribute("href")
             current_5090.link = link_element
 
             # Location and time found information
-            current_5090.store = "Newegg"
+            current_5090.store = "Best Buy"
             current_5090.time = datetime.datetime.now()
 
             with open(csv_file, "a", newline='') as file:
@@ -71,7 +77,7 @@ def searchThroughNewegg(url):
 
 
 if __name__ == "__main__":
-    csv_file = "neweggdata.csv"
+    csv_file = "bestbuydata.csv"
 
     # Opening a file to put quotes in csv form, creating it if it doesn't already exist
     if not os.path.exists(csv_file):
@@ -80,4 +86,4 @@ if __name__ == "__main__":
             writer.writerow(["Product Name", "Price", "Available", "No. Units", "Store", "Time", "Link"])
     
     # Search through Newegg's site for information on 5090 listings
-    searchThroughNewegg(rtx_5090_page_newegg)
+    searchThroughBestBuy(rtx_5090_best_buy_page)
