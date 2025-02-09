@@ -26,4 +26,4 @@ def send_message(message):
     server.quit()
  
 if __name__ == "__main__":
-    send_message("Hi from me again, this should be a text!")
+    send_email("Hi from me again, this should be a text!")

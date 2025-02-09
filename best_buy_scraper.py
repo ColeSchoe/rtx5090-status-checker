@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from RTX5090Listing import RTX5090Listing
-from send_email import send_message
+from send_email import send_message, send_email
 
 rtx_5090_best_buy_page = "https://www.bestbuy.com/site/searchpage.jsp?_dyncharset=UTF-8&browsedCategory=abcat0507002&id=pcat17071&iht=n&ks=960&list=y&qp=gpusv_facet%3DGraphics%20Processing%20Unit%20(GPU)~Nvidia%20GeForce%20RTX%205090&sc=Global&st=categoryid%24abcat0507002&type=page&usc=All%20Categories"
 
@@ -67,9 +67,10 @@ def searchThroughBestBuy(url, csv_file):
             current_5090.store = "Best Buy"
             current_5090.time = datetime.datetime.now()
 
-            # Send email showing availability and a link to the product
+            # Send email showing availability at this store
             if (current_5090.available):
-                send_message("5090 Available at: ", current_5090.link)
+                send_message("5090 Model " + current_5090.product_name + " available at: " + current_5090.store + ". Link: " + current_5090.link)
+                send_email("5090 Model " + current_5090.product_name + " available at: ", current_5090.store)
 
             # Log data
             with open(csv_file, "a", newline='') as file:
