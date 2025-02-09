@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from RTX5090Listing import RTX5090Listing
+from send_email import send_message
 
 rtx_5090_page_microcenter = "https://www.microcenter.com/search/search_results.aspx?Ntk=all&sortby=match&N=4294966937+4294802166+4294802144&myStore=true"
 
@@ -65,6 +66,11 @@ def searchThroughMicroCenter(url, csv_file):
             current_5090.store = "Micro Center"
             current_5090.time = datetime.datetime.now()
 
+            # Send email showing availability and a link to the product
+            if (current_5090.available):
+                send_message("5090 Available at: ", current_5090.link)
+
+            # Log data
             with open(csv_file, "a", newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow([current_5090.product_name, current_5090.price, current_5090.available, current_5090.no_units, current_5090.store, current_5090.time, current_5090.link])
